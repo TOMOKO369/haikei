@@ -40,533 +40,300 @@
         .animate-float {
             animation: float 4s ease-in-out infinite;
         }
-
-
-  :root {
-    --cream: #FDF8F3;
-    --peach: #F4A97A;
-    --peach-light: #FDE8D8;
-    --coral: #E8714A;
-    --charcoal: #2D2926;
-    --mid: #7A6F6A;
-    --white: #FFFFFF;
-    --success: #5BAD8F;
-    --r: 20px;
-  }
-
-  body {
-    background: var(--cream);
-    font-family: 'Inter', 'Zen Maru Gothic', sans-serif;
-    color: var(--charcoal);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  /* HEADER */
-  header {
-    width: 100%;
-    padding: 28px 24px 20px;
-    text-align: center;
-  }
-  .logo {
-    font-family: 'Zen Maru Gothic', sans-serif;
-    font-weight: 900;
-    font-size: clamp(26px, 5vw, 38px);
-    color: var(--charcoal);
-    letter-spacing: -0.5px;
-  }
-  .logo span {
-    color: var(--coral);
-  }
-  .tagline {
-    margin-top: 6px;
-    font-size: 13px;
-    color: var(--mid);
-    letter-spacing: 0.5px;
-  }
-  .free-badge {
-    display: inline-block;
-    margin-top: 10px;
-    background: var(--peach-light);
-    color: var(--coral);
-    font-weight: 700;
-    font-size: 11px;
-    padding: 4px 12px;
-    border-radius: 100px;
-    letter-spacing: 0.5px;
-  }
-
-  /* MAIN */
-  main {
-    width: 100%;
-    max-width: 680px;
-    padding: 0 20px 60px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  /* DROP ZONE */
-  .drop-zone {
-    background: var(--white);
-    border: 2.5px dashed var(--peach);
-    border-radius: var(--r);
-    padding: 48px 24px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    position: relative;
-  }
-  .drop-zone:hover, .drop-zone.drag-over {
-    border-color: var(--coral);
-    background: var(--peach-light);
-  }
-  .drop-zone input[type="file"] {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-  }
-  .drop-icon {
-    font-size: 48px;
-    line-height: 1;
-    margin-bottom: 14px;
-  }
-  .drop-title {
-    font-family: 'Zen Maru Gothic', sans-serif;
-    font-weight: 700;
-    font-size: 18px;
-    color: var(--charcoal);
-    margin-bottom: 8px;
-  }
-  .drop-sub {
-    font-size: 13px;
-    color: var(--mid);
-  }
-
-  /* PREVIEW AREA */
-  .preview-area {
-    display: none;
-    flex-direction: column;
-    gap: 20px;
-  }
-  .preview-area.visible { display: flex; }
-
-  .preview-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-  @media (max-width: 480px) {
-    .preview-grid { grid-template-columns: 1fr; }
-  }
-
-  .preview-card {
-    background: var(--white);
-    border-radius: var(--r);
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  }
-  .preview-card-label {
-    padding: 10px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--mid);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    border-bottom: 1px solid #F0EBE6;
-  }
-  .preview-img-wrap {
-    padding: 16px;
-    min-height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .preview-img-wrap.checker {
-    background-image:
-      linear-gradient(45deg, #E8E4E0 25%, transparent 25%),
-      linear-gradient(-45deg, #E8E4E0 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, #E8E4E0 75%),
-      linear-gradient(-45deg, transparent 75%, #E8E4E0 75%);
-    background-size: 16px 16px;
-    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
-    background-color: var(--white);
-  }
-  .preview-img-wrap img {
-    max-width: 100%;
-    max-height: 260px;
-    object-fit: contain;
-    border-radius: 8px;
-  }
-
-  /* PROGRESS */
-  .progress-wrap {
-    background: var(--white);
-    border-radius: var(--r);
-    padding: 28px 24px;
-    text-align: center;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  }
-  .progress-label {
-    font-family: 'Zen Maru Gothic', sans-serif;
-    font-weight: 700;
-    font-size: 16px;
-    margin-bottom: 16px;
-    color: var(--charcoal);
-  }
-  .progress-bar-track {
-    background: var(--peach-light);
-    border-radius: 100px;
-    height: 10px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    background: linear-gradient(90deg, var(--peach), var(--coral));
-    height: 100%;
-    border-radius: 100px;
-    width: 0%;
-    transition: width 0.3s ease;
-  }
-  .progress-note {
-    margin-top: 12px;
-    font-size: 12px;
-    color: var(--mid);
-  }
-
-  /* BUTTONS */
-  .btn-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .btn {
-    flex: 1;
-    min-width: 140px;
-    padding: 14px 20px;
-    border-radius: 100px;
-    border: none;
-    cursor: pointer;
-    font-family: 'Zen Maru Gothic', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    transition: transform 0.15s, opacity 0.15s;
-  }
-  .btn:hover { transform: translateY(-2px); }
-  .btn:active { transform: translateY(0); }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--peach), var(--coral));
-    color: var(--white);
-    box-shadow: 0 4px 14px rgba(232, 113, 74, 0.35);
-  }
-  .btn-secondary {
-    background: var(--white);
-    color: var(--charcoal);
-    border: 2px solid #E8E0D8;
-  }
-  .btn-success {
-    background: var(--success);
-    color: var(--white);
-    box-shadow: 0 4px 14px rgba(91, 173, 143, 0.35);
-  }
-  .btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  /* TRANSFORM CONTROLS */
-  .transform-panel {
-    background: var(--white);
-    border-radius: var(--r);
-    padding: 18px 20px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  }
-  .transform-panel-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--mid);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-  .transform-btns {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .btn-icon {
-    flex: 1;
-    min-width: 100px;
-    padding: 11px 14px;
-    border-radius: 100px;
-    border: 2px solid #E8E0D8;
-    background: var(--white);
-    color: var(--charcoal);
-    cursor: pointer;
-    font-family: 'Zen Maru Gothic', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    transition: transform 0.15s, border-color 0.15s, background 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-  .btn-icon:hover {
-    border-color: var(--peach);
-    background: var(--peach-light);
-    transform: translateY(-2px);
-  }
-  .btn-icon:active { transform: translateY(0); }
-
-  /* ERROR */
-  .error-msg {
-    background: #FFF0EE;
-    color: var(--coral);
-    border-radius: 12px;
-    padding: 14px 18px;
-    font-size: 14px;
-    display: none;
-  }
-  .error-msg.visible { display: block; }
-
-  /* FOOTER */
-  footer {
-    padding: 20px;
-    text-align: center;
-    font-size: 11px;
-    color: #B0A8A4;
-  }
-</style>
-</head>
-<body>
-
-<header>
-  <div class="logo">ぺろっと<span>消えるくん</span></div>
-  <div class="tagline">画像の背景をワンクリックで透過！</div>
-  <div class="free-badge">✨ 完全無料 · 登録不要 · ブラウザ完結</div>
-</header>
-
-<main>
-  <!-- DROP ZONE -->
-  <div class="drop-zone" id="dropZone">
-    <input type="file" id="fileInput" accept="image/*">
-    <div class="drop-icon">🖼️</div>
-    <div class="drop-title">ここに画像をドラッグ＆ドロップ</div>
-    <div class="drop-sub">またはクリックしてファイルを選ぶ（JPG・PNG・WebP）</div>
-  </div>
-
-  <!-- ERROR -->
-  <div class="error-msg" id="errorMsg"></div>
-
-  <!-- PROGRESS -->
-  <div class="progress-wrap" id="progressWrap" style="display:none;">
-    <div class="progress-label" id="progressLabel">🔄 準備中...</div>
-    <div class="progress-bar-track">
-      <div class="progress-bar-fill" id="progressBar"></div>
-    </div>
-    <div class="progress-note">初回はAIモデルの読み込みに少し時間がかかるよ（約30秒）</div>
-  </div>
-
-  <!-- PREVIEW -->
-  <div class="preview-area" id="previewArea">
-    <div class="preview-grid">
-      <div class="preview-card">
-        <div class="preview-card-label">📸 元の画像</div>
-        <div class="preview-img-wrap">
-          <img id="originalImg" src="" alt="元画像">
-        </div>
-      </div>
-      <div class="preview-card">
-        <div class="preview-card-label">✨ 背景透過後</div>
-        <div class="preview-img-wrap checker">
-          <img id="resultImg" src="" alt="処理後">
-        </div>
-      </div>
-    </div>
-
-    <!-- TRANSFORM PANEL -->
-    <div class="transform-panel">
-      <div class="transform-panel-label">🎨 透過後の画像を調整</div>
-      <div class="transform-btns">
-        <button class="btn-icon" id="rotateLeftBtn">↺ 左に回転</button>
-        <button class="btn-icon" id="rotateRightBtn">↻ 右に回転</button>
-        <button class="btn-icon" id="flipHBtn">↔ 左右反転</button>
-        <button class="btn-icon" id="flipVBtn">↕ 上下反転</button>
-      </div>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-success" id="downloadBtn">⬇️ PNGでダウンロード</button>
-      <button class="btn btn-secondary" id="resetBtn">🔄 別の画像を試す</button>
-    </div>
-  </div>
-</main>
-
-<footer>
-  AIで背景を自動検出 · 処理は全てブラウザ内で完結 · サーバーに画像は送信されません🔒
-</footer>
-
-<script type="module">
-  import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/background-removal.esm.js';
-
-  const dropZone = document.getElementById('dropZone');
-  const fileInput = document.getElementById('fileInput');
-  const progressWrap = document.getElementById('progressWrap');
-  const progressLabel = document.getElementById('progressLabel');
-  const progressBar = document.getElementById('progressBar');
-  const previewArea = document.getElementById('previewArea');
-  const originalImg = document.getElementById('originalImg');
-  const resultImg = document.getElementById('resultImg');
-  const downloadBtn = document.getElementById('downloadBtn');
-  const resetBtn = document.getElementById('resetBtn');
-  const errorMsg = document.getElementById('errorMsg');
-
-  let resultBlob = null;
-  let currentRotation = 0;   // 0, 90, 180, 270
-  let flipH = false;
-  let flipV = false;
-  let baseImage = null; // HTMLImageElement of the raw result
-
-  // Drag & drop
-  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file) processFile(file);
-  });
-  fileInput.addEventListener('change', () => {
-    if (fileInput.files[0]) processFile(fileInput.files[0]);
-  });
-
-  async function processFile(file) {
-    if (!file.type.startsWith('image/')) {
-      showError('画像ファイルを選んでね（JPG・PNG・WebP）');
-      return;
-    }
-    hideError();
-    dropZone.style.display = 'none';
-    progressWrap.style.display = 'block';
-    previewArea.classList.remove('visible');
-
-    // Reset transform state
-    currentRotation = 0; flipH = false; flipV = false;
-
-    const originalURL = URL.createObjectURL(file);
-    originalImg.src = originalURL;
-    setProgress(10, '🤖 AIモデルを読み込み中...');
-
-    try {
-      const blob = await removeBackground(file, {
-        progress: (key, current, total) => {
-          const pct = Math.round((current / total) * 80) + 10;
-          const labels = {
-            'fetch:model': 'AIモデルをダウンロード中',
-            'compute:inference': '背景を解析中...',
-          };
-          setProgress(pct, `🔍 ${labels[key] || '処理中'}...`);
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#fff7f6",
+                        "surface-dim": "#dadada",
+                        "surface": "#f9f9f9",
+                        "inverse-primary": "#ffb4aa",
+                        "on-secondary-container": "#646464",
+                        "on-secondary-fixed-variant": "#474747",
+                        "on-surface-variant": "#5f3f3b",
+                        "secondary": "#5e5e5e",
+                        "on-tertiary-fixed": "#241a00",
+                        "secondary-fixed-dim": "#c6c6c6",
+                        "tertiary-fixed": "#ffe088",
+                        "secondary-fixed": "#e2e2e2",
+                        "on-primary-fixed-variant": "#930007",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#1a1c1c",
+                        "surface-container-high": "#e8e8e8",
+                        "inverse-surface": "#2f3131",
+                        "inverse-on-surface": "#f0f1f1",
+                        "paper-white": "#F9F9F9",
+                        "surface-container": "#eeeeee",
+                        "on-tertiary-container": "#4f3d00",
+                        "secondary-container": "#e2e2e2",
+                        "tertiary-fixed-dim": "#e9c349",
+                        "on-secondary-fixed": "#1b1b1b",
+                        "on-background": "#1a1c1c",
+                        "surface-variant": "#e2e2e2",
+                        "surface-container-low": "#f3f3f4",
+                        "tertiary-container": "#cca730",
+                        "sumi-black": "#0A0A0A",
+                        "kintsugi-gold": "#D4AF37",
+                        "primary-fixed-dim": "#ffb4aa",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#410001",
+                        "surface-bright": "#f9f9f9",
+                        "primary-fixed": "#ffdad5",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#e60012",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#c0000d",
+                        "tertiary": "#735c00",
+                        "on-secondary": "#ffffff",
+                        "outline": "#946e69",
+                        "background": "#f9f9f9",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#b7000c",
+                        "outline-variant": "#e9bcb6",
+                        "surface-container-lowest": "#ffffff",
+                        "torii-red": "#E60012",
+                        "on-tertiary-fixed-variant": "#574500"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Plus Jakarta Sans"],
+                        "display-xl": ["Anton"],
+                        "headline-lg": ["Anton"],
+                        "headline-md": ["Sora"],
+                        "label-bold": ["Sora"],
+                        "display-xl-mobile": ["Anton"],
+                        "japanese-heavy": ["Noto Sans JP"]
+                    }
+                }
+            }
         }
-      });
-
-      setProgress(100, '✅ 完成！');
-
-      // Load base image from blob
-      baseImage = new Image();
-      baseImage.src = URL.createObjectURL(blob);
-      await new Promise(res => { baseImage.onload = res; });
-
-      applyTransform();
-
-      setTimeout(() => {
-        progressWrap.style.display = 'none';
-        previewArea.classList.add('visible');
-      }, 500);
-
-    } catch (err) {
-      console.error(err);
-      progressWrap.style.display = 'none';
-      dropZone.style.display = 'block';
-      showError('処理に失敗しちゃった😢 別の画像で試してみてね。');
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
     }
-  }
+  </style>
+  </head>
+<body class="japanese-paper text-sumi-black font-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-sumi-black border-b-4 border-sumi-black dark:border-paper-white shadow-[4px_4px_0px_0px_rgba(10,10,10,1)] flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 w-full z-50">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-torii-red text-3xl">menu</span>
+<h1 class="font-display-xl-mobile text-display-xl-mobile text-torii-red tracking-tighter uppercase">背景を邪魔すぎて滅</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-8">
+<a class="font-label-bold text-torii-red" href="#">Home</a>
+<a class="font-label-bold text-sumi-black dark:text-paper-white hover:bg-torii-red hover:text-paper-white transition-colors duration-200" href="#">Process</a>
+<a class="font-label-bold text-sumi-black dark:text-paper-white hover:bg-torii-red hover:text-paper-white transition-colors duration-200" href="#">Gallery</a>
+</nav>
+<div class="w-10 h-10 bg-sumi-black rounded-full border-2 border-torii-red overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5gZF8x-x3_bwagJkxfWCItvq3tkr70PtRCkA_O4A_Ry9V-sHMi0M77jYW3OiXfCAhTijIpIoqzXdLtx49elraTjszNM3KRwFVNF-P6pjvcMSiMRX7WG5BflI74mmBwexnwrYrlMfeig5B1pcLe5yuiuQRVZcCQgAuyRmn3i7SmdoYA3ag0paCPkznFm9zoJ1MFd6kHMq1LVoxtluS5gfv-eixphmI1Bo4RiJRP-qk4apDat6OHZ7HMgW_8sIrFjLRCTo671Tg3w"/>
+</div>
+</div>
+</header>
+<main class="relative">
+<!-- Hero Section -->
+<section class="relative min-h-[795px] flex flex-col md:flex-row items-center justify-between px-margin-mobile md:px-margin-desktop py-12 overflow-hidden">
+<!-- Background Kanji -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none select-none">
+<span class="text-[600px] font-japanese-heavy">滅</span>
+</div>
+<!-- Massive Vertical Text -->
+<div class="z-10 order-2 md:order-1">
+<h2 class="vertical-text font-japanese-heavy text-7xl md:text-[180px] leading-none tracking-tighter text-sumi-black relative">
+                    背景、<span class="text-torii-red">滅。</span>
+<div class="absolute -right-4 top-0 w-2 h-full bg-torii-red"></div>
+</h2>
+</div>
+<!-- Upload Area -->
+<div class="z-10 order-1 md:order-2 w-full md:w-1/2 flex flex-col items-center gap-8">
+<div class="relative group cursor-pointer w-full max-w-xl aspect-square bg-paper-white border-[6px] border-sumi-black shadow-[12px_12px_0px_0px_rgba(230,0,18,1)] transition-all active:translate-y-2 active:shadow-none p-1" id="drop-zone">
+<!-- Corner Accents -->
+<div class="absolute -top-2 -left-2 w-8 h-8 bg-kintsugi-gold z-20"></div>
+<div class="absolute -bottom-2 -right-2 w-8 h-8 bg-torii-red z-20"></div>
+<div class="w-full h-full flex flex-col items-center justify-center border-2 border-dashed border-sumi-black/20 group-hover:bg-torii-red/5 transition-colors">
+<span class="material-symbols-outlined text-8xl text-torii-red mb-4 group-hover:scale-110 transition-transform">ink_eraser</span>
+<p class="font-headline-md text-headline-md text-sumi-black mb-2">イラストを捧げよ</p>
+<p class="font-body-md text-secondary opacity-60">Drag &amp; Drop or Click to Sacrifce</p>
+<input class="hidden" id="file-input" type="file" accept="image/*"/>
+</div>
+</div>
+<!-- Features Ribbon -->
+<div class="flex flex-wrap justify-center gap-4 w-full">
+<div class="bg-sumi-black text-paper-white px-6 py-3 skew-x-[-15deg] font-label-bold flex items-center gap-2 shadow-[4px_4px_0px_0px_rgba(212,175,55,1)]">
+<span class="material-symbols-outlined text-kintsugi-gold" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                        100% FREE
+                    </div>
+<div class="bg-torii-red text-paper-white px-6 py-3 skew-x-[-15deg] font-label-bold flex items-center gap-2 shadow-[4px_4px_0px_0px_rgba(10,10,10,1)]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_fix_high</span>
+                        AI DESTRUCTION
+                    </div>
+<div class="bg-paper-white border-2 border-sumi-black text-sumi-black px-6 py-3 skew-x-[-15deg] font-label-bold flex items-center gap-2 shadow-[4px_4px_0px_0px_rgba(230,0,18,1)]">
+<span class="material-symbols-outlined text-torii-red" style="font-variation-settings: 'FILL' 1;">high_quality</span>
+                        HIGH RES
+                    </div>
+</div>
+</div>
+</section>
+<!-- Decorative Divider -->
+<div class="w-full py-12 flex items-center justify-center overflow-hidden whitespace-nowrap bg-sumi-black">
+<div class="flex animate-[marquee_20s_linear_infinite] gap-12 text-torii-red font-display-xl uppercase opacity-80">
+<span>Destroy The Noise • 滅 • High Octane Art • 滅 • Background Killer • 滅 • Destroy The Noise • 滅 • High Octane Art • 滅 • Background Killer</span>
+</div>
+</div>
+<!-- Bento Grid Features -->
+<section class="px-margin-mobile md:px-margin-desktop py-24">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Large Feature Card -->
+<div class="md:col-span-8 group relative overflow-hidden bg-sumi-black aspect-[16/9] md:aspect-auto p-12 flex flex-col justify-end border-4 border-sumi-black shadow-[16px_16px_0px_0px_rgba(230,0,18,1)]">
+<img class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-110 transition-transform duration-700" data-alt="A cinematic action-packed anime style illustration of a samurai cutting through space and time, with glowing red energy slashes. The background is a traditional Japanese dojo with dramatic high-contrast lighting, deep blacks, and vibrant red accents, embodying a fierce and aggressive modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUdS8v6mOHNtpWb5niJbU02-hU2-UOeqhrvtlnO2a72XUjSfjA5dMrSdfpqAv3FfD328sUCumEh4jcBGAGmbV-_6B86v5gB03cMZFS1GDN8r0GeXTDS2kq7gDf8qaZz6sRxwdN0MCCy5yBePAJdmdeDEtWbnJ7vTjsI96Zwv3bVKNJkvvpNzvgNsDDGx57ligtLuQbUG_SN6Lk07FkoZv4jcJKwtqNFIAYHneuyAI0HPjalXd5OJWE8U2maqk6lgrqOiOefZMPdw"/>
+<div class="relative z-10">
+<span class="bg-torii-red text-paper-white px-4 py-1 text-label-bold mb-4 inline-block">PRECISION</span>
+<h3 class="font-display-xl text-paper-white text-6xl leading-tight">Meticulous<br/>Isolation.</h3>
+<p class="text-paper-white/60 font-body-lg max-w-md mt-4">Our AI detects even the finest strands of hair and complex silhouettes to ensure your subject remains pristine while the background is erased.</p>
+</div>
+</div>
+<!-- Secondary Cards -->
+<div class="md:col-span-4 space-y-8">
+<div class="bg-paper-white border-4 border-sumi-black p-8 shadow-[8px_8px_0px_0px_rgba(212,175,55,1)] relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-kintsugi-gold skew-x-[45deg] translate-x-8 -translate-y-8"></div>
+<span class="material-symbols-outlined text-5xl text-torii-red mb-4">speed</span>
+<h4 class="font-headline-md text-sumi-black">Instant Speed</h4>
+<p class="font-body-md text-secondary mt-2">Processed in under 3 seconds using our high-end neural core servers.</p>
+</div>
+<div class="bg-torii-red border-4 border-sumi-black p-8 shadow-[8px_8px_0px_0px_rgba(10,10,10,1)] text-paper-white">
+<span class="material-symbols-outlined text-5xl mb-4">security</span>
+<h4 class="font-headline-md">Soul Privacy</h4>
+<p class="font-body-md opacity-80 mt-2">Your illustrations are yours alone. Files are purged immediately after destruction.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Comparison Slider Style Section -->
+<section class="bg-paper-white py-24 relative">
+<div class="container-max mx-auto px-margin-mobile flex flex-col items-center">
+<div class="text-center mb-16 relative">
+<h2 class="font-japanese-heavy text-6xl md:text-8xl text-sumi-black uppercase tracking-tighter">Before <span class="text-torii-red">&amp;</span> After</h2>
+<div class="h-2 w-32 bg-kintsugi-gold mx-auto mt-4"></div>
+</div>
+<div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="relative border-4 border-sumi-black overflow-hidden group">
+<img class="w-full aspect-square object-cover grayscale" data-alt="A raw, unprocessed photograph of a classic Japanese street scene at night with many neon signs and distracting background elements. The image is presented in a high-contrast black and white style to emphasize the clutter that needs to be removed for a clean subject isolation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYeFOo7BUE2fmIOB6T5nhA_CGe0729ip-SR-0-fzFtleYkRne2o1_2xAwYyMq8hqHG8o1pw9axhuR2SlphzfgpamBASCk8CY7KEbpU3q6iERwg5N9aMw2YftW07cWdwiVajwxOX9b8cg803_CcxQWpcPt1R6zKfBhDX0_i-sol7ahxblNnXuoJl1HIM3YH9v5T6yojnLJHX8sc7sNsyq4NGgcFX4hcyLLAbilx5QcGTDODlRWL1bDcqOObrJljaAUNtYwdT6jACg"/>
+<div class="absolute inset-0 bg-sumi-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="text-paper-white font-headline-md">BEFORE</span>
+</div>
+</div>
+<div class="relative border-4 border-torii-red overflow-hidden group">
+<div class="absolute inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:20px_20px] opacity-20"></div>
+<img class="w-full aspect-square object-contain relative z-10" data-alt="A perfectly isolated character illustration with no background, set against a subtle grid pattern. The subject is a modern anime character with sharp lines and vibrant colors, showcasing the precision and high-quality result of the background removal process in a clean light-mode environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaSSSuIJ6mOmfdEx7yGVLmlkI80UdHIm8dWzqe4rvFooBHxyTSlCweWe_aRzSc5fb0DgZmFGThIHiFA-cgFqrP_hplF5mcUtnd-jvT9af2NjDsRfJVgEeyio7g4IJuZTWa0bH1gzlfaYqpH_BgMqEwPAiGCLFgnsouAhF1qJCbXOPEwk3F14ZLQQBWv4_uP0XdwsNObNnQCBmZM5JrDoUKiLKI6AUZ2p3vpCZVirnmrgggUfh6F-uO8krX-pVzALsR280l0Aq6TQ"/>
+<div class="absolute inset-0 bg-torii-red/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
+<span class="text-paper-white font-headline-md">AFTER</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-sumi-black dark:bg-sumi-black border-t-4 border-torii-red flex justify-around items-center h-20 px-4 w-full md:hidden">
+<a class="flex flex-col items-center justify-center text-paper-white bg-torii-red px-6 py-2 skew-x-[-15deg]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-bold text-label-bold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary-fixed-dim px-6 py-2 hover:text-kintsugi-gold transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">ink_eraser</span>
+<span class="font-label-bold text-label-bold">Process</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary-fixed-dim px-6 py-2 hover:text-kintsugi-gold transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">collections</span>
+<span class="font-label-bold text-label-bold">Gallery</span>
+</a>
+</nav>
+<!-- Footer -->
+<footer class="bg-sumi-black text-paper-white py-20 px-margin-mobile md:px-margin-desktop border-t-8 border-torii-red">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-end">
+<div>
+<h2 class="font-display-xl text-torii-red text-6xl mb-6">背景を邪魔すぎて滅</h2>
+<p class="font-body-lg max-w-md opacity-60">
+                    The ultimate background destruction engine for artists who demand absolute focus on their subjects. Built with high-octane AI technology.
+                </p>
+</div>
+<div class="flex flex-col md:items-end gap-8">
+<div class="flex gap-6">
+<a class="w-12 h-12 flex items-center justify-center border-2 border-paper-white hover:bg-torii-red hover:border-torii-red transition-all" href="#">
+<span class="material-symbols-outlined">share</span>
+</a>
+<a class="w-12 h-12 flex items-center justify-center border-2 border-paper-white hover:bg-torii-red hover:border-torii-red transition-all" href="#">
+<span class="material-symbols-outlined">mail</span>
+</a>
+</div>
+<p class="font-caption opacity-40 uppercase tracking-[0.2em]">© 2024 METSU CORE • TOKYO SHIBUYA</p>
+</div>
+</div>
+</footer>
+<script type="module">
+import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/background-removal.esm.js';
 
-  function applyTransform() {
-    if (!baseImage) return;
-    const rad = (currentRotation * Math.PI) / 180;
-    const sw = baseImage.naturalWidth, sh = baseImage.naturalHeight;
-    // Canvas size swaps for 90/270
-    const cw = (currentRotation % 180 === 0) ? sw : sh;
-    const ch = (currentRotation % 180 === 0) ? sh : sw;
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
 
-    const canvas = document.createElement('canvas');
-    canvas.width = cw;
-    canvas.height = ch;
-    const ctx = canvas.getContext('2d');
+dropZone.addEventListener('click', () => fileInput.click());
 
-    ctx.translate(cw / 2, ch / 2);
-    ctx.rotate(rad);
-    ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
-    ctx.drawImage(baseImage, -sw / 2, -sh / 2);
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('bg-torii-red/10');
+});
 
-    canvas.toBlob(blob => {
-      resultBlob = blob;
-      resultImg.src = URL.createObjectURL(blob);
-    }, 'image/png');
-  }
+dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('bg-torii-red/10');
+});
 
-  // Transform buttons
-  document.getElementById('rotateLeftBtn').addEventListener('click', () => {
-    currentRotation = (currentRotation - 90 + 360) % 360;
-    applyTransform();
-  });
-  document.getElementById('rotateRightBtn').addEventListener('click', () => {
-    currentRotation = (currentRotation + 90) % 360;
-    applyTransform();
-  });
-  document.getElementById('flipHBtn').addEventListener('click', () => {
-    flipH = !flipH;
-    applyTransform();
-  });
-  document.getElementById('flipVBtn').addEventListener('click', () => {
-    flipV = !flipV;
-    applyTransform();
-  });
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('bg-torii-red/10');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        processFile(files[0]);
+    }
+});
 
-  function setProgress(pct, label) {
-    progressBar.style.width = pct + '%';
-    progressLabel.textContent = label;
-  }
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        processFile(e.target.files[0]);
+    }
+});
 
-  downloadBtn.addEventListener('click', () => {
-    if (!resultBlob) return;
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(resultBlob);
-    a.download = 'transparent_' + Date.now() + '.png';
-    a.click();
-  });
+async function processFile(file) {
+    if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+    }
+    
+    try {
+        const blob = await removeBackground(file);
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'removed_background_' + Date.now() + '.png';
+        a.click();
+    } catch (err) {
+        console.error(err);
+        alert('Processing failed');
+    }
+}
 
-  resetBtn.addEventListener('click', () => {
-    previewArea.classList.remove('visible');
-    dropZone.style.display = 'block';
-    fileInput.value = '';
-    resultBlob = null;
-    baseImage = null;
-  });
-
-  function showError(msg) {
-    errorMsg.textContent = msg;
-    errorMsg.classList.add('visible');
-  }
-  function hideError() {
-    errorMsg.classList.remove('visible');
-  }
+// Add micro-interaction for horizontal marquee
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+`;
+document.head.appendChild(style);
 </script>
-</body>
-</html>
+</body></html>
