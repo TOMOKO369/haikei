@@ -282,6 +282,12 @@ import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 
+let resultBlob = null;
+let currentRotation = 0;   // 0, 90, 180, 270
+let flipH = false;
+let flipV = false;
+let baseImage = null;
+
 dropZone.addEventListener('click', () => fileInput.click());
 
 dropZone.addEventListener('dragover', (e) => {
@@ -316,14 +322,121 @@ async function processFile(file) {
     
     try {
         const blob = await removeBackground(file);
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'removed_background_' + Date.now() + '.png';
-        a.click();
+        
+        // Load base image from blob
+        baseImage = new Image();
+        baseImage.src = URL.createObjectURL(blob);
+        baseImage.onload = () => {
+            // Reset transform state
+            currentRotation = 0;
+            flipH = false;
+            flipV = false;
+            
+            // Show transform buttons and download option
+            showTransformUI();
+            applyTransform();
+        };
+        
     } catch (err) {
         console.error(err);
         alert('Processing failed');
     }
+}
+
+function showTransformUI() {
+    // Create modal or panel for transform controls
+    const panel = document.createElement('div');
+    panel.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-40';
+    panel.id = 'transform-panel';
+    
+    panel.innerHTML = `
+        <div class="bg-paper-white border-4 border-sumi-black p-8 shadow-[16px_16px_0px_0px_rgba(230,0,18,1)] max-w-2xl w-full mx-4">
+            <h2 class="font-headline-md text-sumi-black mb-6 text-center">画像を調整</h2>
+            
+            <div class="mb-6">
+                <div id="preview-container" class="border-4 border-sumi-black bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:20px_20px]" style="aspect-ratio: 1; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                    <img id="transform-preview" src="" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap gap-3 mb-6 justify-center">
+                <button id="rotate-left" class="bg-sumi-black text-paper-white px-4 py-2 font-label-bold hover:bg-torii-red transition">↺ 左に回転</button>
+                <button id="rotate-right" class="bg-torii-red text-paper-white px-4 py-2 font-label-bold hover:bg-sumi-black transition">↻ 右に回転</button>
+                <button id="flip-h" class="bg-paper-white border-2 border-sumi-black text-sumi-black px-4 py-2 font-label-bold hover:bg-torii-red hover:text-paper-white transition">↔ 左右反転</button>
+                <button id="flip-v" class="bg-paper-white border-2 border-sumi-black text-sumi-black px-4 py-2 font-label-bold hover:bg-torii-red hover:text-paper-white transition">↕ 上下反転</button>
+            </div>
+            
+            <div class="flex gap-3 justify-center">
+                <button id="download-btn" class="bg-torii-red text-paper-white px-6 py-2 font-label-bold hover:bg-sumi-black transition">⬇️ ダウンロード</button>
+                <button id="close-panel" class="bg-paper-white border-2 border-sumi-black text-sumi-black px-6 py-2 font-label-bold hover:bg-torii-red hover:text-paper-white transition">✕ 閉じる</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(panel);
+    
+    // Add event listeners
+    document.getElementById('rotate-left').addEventListener('click', () => {
+        currentRotation = (currentRotation - 90 + 360) % 360;
+        applyTransform();
+    });
+    
+    document.getElementById('rotate-right').addEventListener('click', () => {
+        currentRotation = (currentRotation + 90) % 360;
+        applyTransform();
+    });
+    
+    document.getElementById('flip-h').addEventListener('click', () => {
+        flipH = !flipH;
+        applyTransform();
+    });
+    
+    document.getElementById('flip-v').addEventListener('click', () => {
+        flipV = !flipV;
+        applyTransform();
+    });
+    
+    document.getElementById('download-btn').addEventListener('click', () => {
+        if (!resultBlob) return;
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(resultBlob);
+        a.download = 'removed_background_' + Date.now() + '.png';
+        a.click();
+    });
+    
+    document.getElementById('close-panel').addEventListener('click', () => {
+        panel.remove();
+    });
+}
+
+function applyTransform() {
+    if (!baseImage) return;
+    
+    const rad = (currentRotation * Math.PI) / 180;
+    const sw = baseImage.naturalWidth;
+    const sh = baseImage.naturalHeight;
+    
+    // Canvas size swaps for 90/270
+    const cw = (currentRotation % 180 === 0) ? sw : sh;
+    const ch = (currentRotation % 180 === 0) ? sh : sw;
+    
+    const canvas = document.createElement('canvas');
+    canvas.width = cw;
+    canvas.height = ch;
+    const ctx = canvas.getContext('2d');
+    
+    ctx.translate(cw / 2, ch / 2);
+    ctx.rotate(rad);
+    ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
+    ctx.drawImage(baseImage, -sw / 2, -sh / 2);
+    
+    canvas.toBlob(blob => {
+        resultBlob = blob;
+        const previewImg = document.getElementById('transform-preview');
+        if (previewImg) {
+            previewImg.src = URL.createObjectURL(blob);
+        }
+    }, 'image/png');
 }
 
 // Add micro-interaction for horizontal marquee
