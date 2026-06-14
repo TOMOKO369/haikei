@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>背景透過ツール｜ぺろっと消えるくん</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Inter:wght@400;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FDF8F3;
+    --peach: #F4A97A;
+    --peach-light: #FDE8D8;
+    --coral: #E8714A;
+    --charcoal: #2D2926;
+    --mid: #7A6F6A;
+    --white: #FFFFFF;
+    --success: #5BAD8F;
+    --r: 20px;
+  }
+
+  body {
+    background: var(--cream);
+    font-family: 'Inter', 'Zen Maru Gothic', sans-serif;
+    color: var(--charcoal);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* HEADER */
+  header {
+    width: 100%;
+    padding: 28px 24px 20px;
+    text-align: center;
+  }
+  .logo {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-weight: 900;
+    font-size: clamp(26px, 5vw, 38px);
+    color: var(--charcoal);
+    letter-spacing: -0.5px;
+  }
+  .logo span {
+    color: var(--coral);
+  }
+  .tagline {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--mid);
+    letter-spacing: 0.5px;
+  }
+  .free-badge {
+    display: inline-block;
+    margin-top: 10px;
+    background: var(--peach-light);
+    color: var(--coral);
+    font-weight: 700;
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 100px;
+    letter-spacing: 0.5px;
+  }
+
+  /* MAIN */
+  main {
+    width: 100%;
+    max-width: 680px;
+    padding: 0 20px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* DROP ZONE */
+  .drop-zone {
+    background: var(--white);
+    border: 2.5px dashed var(--peach);
+    border-radius: var(--r);
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--coral);
+    background: var(--peach-light);
+  }
+  .drop-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+  .drop-icon {
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .drop-title {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--charcoal);
+    margin-bottom: 8px;
+  }
+  .drop-sub {
+    font-size: 13px;
+    color: var(--mid);
+  }
+
+  /* PREVIEW AREA */
+  .preview-area {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .preview-area.visible { display: flex; }
+
+  .preview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 480px) {
+    .preview-grid { grid-template-columns: 1fr; }
+  }
+
+  .preview-card {
+    background: var(--white);
+    border-radius: var(--r);
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .preview-card-label {
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mid);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #F0EBE6;
+  }
+  .preview-img-wrap {
+    padding: 16px;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .preview-img-wrap.checker {
+    background-image:
+      linear-gradient(45deg, #E8E4E0 25%, transparent 25%),
+      linear-gradient(-45deg, #E8E4E0 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #E8E4E0 75%),
+      linear-gradient(-45deg, transparent 75%, #E8E4E0 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    background-color: var(--white);
+  }
+  .preview-img-wrap img {
+    max-width: 100%;
+    max-height: 260px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+  /* PROGRESS */
+  .progress-wrap {
+    background: var(--white);
+    border-radius: var(--r);
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .progress-label {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 16px;
+    color: var(--charcoal);
+  }
+  .progress-bar-track {
+    background: var(--peach-light);
+    border-radius: 100px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    background: linear-gradient(90deg, var(--peach), var(--coral));
+    height: 100%;
+    border-radius: 100px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  .progress-note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--mid);
+  }
+
+  /* BUTTONS */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 14px 20px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: translateY(0); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--peach), var(--coral));
+    color: var(--white);
+    box-shadow: 0 4px 14px rgba(232, 113, 74, 0.35);
+  }
+  .btn-secondary {
+    background: var(--white);
+    color: var(--charcoal);
+    border: 2px solid #E8E0D8;
+  }
+  .btn-success {
+    background: var(--success);
+    color: var(--white);
+    box-shadow: 0 4px 14px rgba(91, 173, 143, 0.35);
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* TRANSFORM CONTROLS */
+  .transform-panel {
+    background: var(--white);
+    border-radius: var(--r);
+    padding: 18px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .transform-panel-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mid);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .transform-btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .btn-icon {
+    flex: 1;
+    min-width: 100px;
+    padding: 11px 14px;
+    border-radius: 100px;
+    border: 2px solid #E8E0D8;
+    background: var(--white);
+    color: var(--charcoal);
+    cursor: pointer;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    transition: transform 0.15s, border-color 0.15s, background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .btn-icon:hover {
+    border-color: var(--peach);
+    background: var(--peach-light);
+    transform: translateY(-2px);
+  }
+  .btn-icon:active { transform: translateY(0); }
+
+  /* ERROR */
+  .error-msg {
+    background: #FFF0EE;
+    color: var(--coral);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 14px;
+    display: none;
+  }
+  .error-msg.visible { display: block; }
+
+  /* FOOTER */
+  footer {
+    padding: 20px;
+    text-align: center;
+    font-size: 11px;
+    color: #B0A8A4;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ぺろっと<span>消えるくん</span></div>
+  <div class="tagline">画像の背景をワンクリックで透過！</div>
+  <div class="free-badge">✨ 完全無料 · 登録不要 · ブラウザ完結</div>
+</header>
+
+<main>
+  <!-- DROP ZONE -->
+  <div class="drop-zone" id="dropZone">
+    <input type="file" id="fileInput" accept="image/*">
+    <div class="drop-icon">🖼️</div>
+    <div class="drop-title">ここに画像をドラッグ＆ドロップ</div>
+    <div class="drop-sub">またはクリックしてファイルを選ぶ（JPG・PNG・WebP）</div>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-msg" id="errorMsg"></div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressWrap" style="display:none;">
+    <div class="progress-label" id="progressLabel">🔄 準備中...</div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+    <div class="progress-note">初回はAIモデルの読み込みに少し時間がかかるよ（約30秒）</div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-area" id="previewArea">
+    <div class="preview-grid">
+      <div class="preview-card">
+        <div class="preview-card-label">📸 元の画像</div>
+        <div class="preview-img-wrap">
+          <img id="originalImg" src="" alt="元画像">
+        </div>
+      </div>
+      <div class="preview-card">
+        <div class="preview-card-label">✨ 背景透過後</div>
+        <div class="preview-img-wrap checker">
+          <img id="resultImg" src="" alt="処理後">
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANSFORM PANEL -->
+    <div class="transform-panel">
+      <div class="transform-panel-label">🎨 透過後の画像を調整</div>
+      <div class="transform-btns">
+        <button class="btn-icon" id="rotateLeftBtn">↺ 左に回転</button>
+        <button class="btn-icon" id="rotateRightBtn">↻ 右に回転</button>
+        <button class="btn-icon" id="flipHBtn">↔ 左右反転</button>
+        <button class="btn-icon" id="flipVBtn">↕ 上下反転</button>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-success" id="downloadBtn">⬇️ PNGでダウンロード</button>
+      <button class="btn btn-secondary" id="resetBtn">🔄 別の画像を試す</button>
+    </div>
+  </div>
+</main>
+
+<footer>
+  AIで背景を自動検出 · 処理は全てブラウザ内で完結 · サーバーに画像は送信されません🔒
+</footer>
+
+<script type="module">
+  import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/background-removal.esm.js';
+
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const progressWrap = document.getElementById('progressWrap');
+  const progressLabel = document.getElementById('progressLabel');
+  const progressBar = document.getElementById('progressBar');
+  const previewArea = document.getElementById('previewArea');
+  const originalImg = document.getElementById('originalImg');
+  const resultImg = document.getElementById('resultImg');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const errorMsg = document.getElementById('errorMsg');
+
+  let resultBlob = null;
+  let currentRotation = 0;   // 0, 90, 180, 270
+  let flipH = false;
+  let flipV = false;
+  let baseImage = null; // HTMLImageElement of the raw result
+
+  // Drag & drop
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) processFile(file);
+  });
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) processFile(fileInput.files[0]);
+  });
+
+  async function processFile(file) {
+    if (!file.type.startsWith('image/')) {
+      showError('画像ファイルを選んでね（JPG・PNG・WebP）');
+      return;
+    }
+    hideError();
+    dropZone.style.display = 'none';
+    progressWrap.style.display = 'block';
+    previewArea.classList.remove('visible');
+
+    // Reset transform state
+    currentRotation = 0; flipH = false; flipV = false;
+
+    const originalURL = URL.createObjectURL(file);
+    originalImg.src = originalURL;
+    setProgress(10, '🤖 AIモデルを読み込み中...');
+
+    try {
+      const blob = await removeBackground(file, {
+        progress: (key, current, total) => {
+          const pct = Math.round((current / total) * 80) + 10;
+          const labels = {
+            'fetch:model': 'AIモデルをダウンロード中',
+            'compute:inference': '背景を解析中...',
+          };
+          setProgress(pct, `🔍 ${labels[key] || '処理中'}...`);
+        }
+      });
+
+      setProgress(100, '✅ 完成！');
+
+      // Load base image from blob
+      baseImage = new Image();
+      baseImage.src = URL.createObjectURL(blob);
+      await new Promise(res => { baseImage.onload = res; });
+
+      applyTransform();
+
+      setTimeout(() => {
+        progressWrap.style.display = 'none';
+        previewArea.classList.add('visible');
+      }, 500);
+
+    } catch (err) {
+      console.error(err);
+      progressWrap.style.display = 'none';
+      dropZone.style.display = 'block';
+      showError('処理に失敗しちゃった😢 別の画像で試してみてね。');
+    }
+  }
+
+  function applyTransform() {
+    if (!baseImage) return;
+    const rad = (currentRotation * Math.PI) / 180;
+    const sw = baseImage.naturalWidth, sh = baseImage.naturalHeight;
+    // Canvas size swaps for 90/270
+    const cw = (currentRotation % 180 === 0) ? sw : sh;
+    const ch = (currentRotation % 180 === 0) ? sh : sw;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = cw;
+    canvas.height = ch;
+    const ctx = canvas.getContext('2d');
+
+    ctx.translate(cw / 2, ch / 2);
+    ctx.rotate(rad);
+    ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
+    ctx.drawImage(baseImage, -sw / 2, -sh / 2);
+
+    canvas.toBlob(blob => {
+      resultBlob = blob;
+      resultImg.src = URL.createObjectURL(blob);
+    }, 'image/png');
+  }
+
+  // Transform buttons
+  document.getElementById('rotateLeftBtn').addEventListener('click', () => {
+    currentRotation = (currentRotation - 90 + 360) % 360;
+    applyTransform();
+  });
+  document.getElementById('rotateRightBtn').addEventListener('click', () => {
+    currentRotation = (currentRotation + 90) % 360;
+    applyTransform();
+  });
+  document.getElementById('flipHBtn').addEventListener('click', () => {
+    flipH = !flipH;
+    applyTransform();
+  });
+  document.getElementById('flipVBtn').addEventListener('click', () => {
+    flipV = !flipV;
+    applyTransform();
+  });
+
+  function setProgress(pct, label) {
+    progressBar.style.width = pct + '%';
+    progressLabel.textContent = label;
+  }
+
+  downloadBtn.addEventListener('click', () => {
+    if (!resultBlob) return;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(resultBlob);
+    a.download = 'transparent_' + Date.now() + '.png';
+    a.click();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    previewArea.classList.remove('visible');
+    dropZone.style.display = 'block';
+    fileInput.value = '';
+    resultBlob = null;
+    baseImage = null;
+  });
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.classList.add('visible');
+  }
+  function hideError() {
+    errorMsg.classList.remove('visible');
+  }
+</script>
+</body>
+</html>
