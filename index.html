@@ -285,39 +285,49 @@
 <script type="module">
 import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/background-removal.esm.js';
 
-const dropZone = document.getElementById('drop-zone');
-const fileInput = document.getElementById('file-input');
-
 let resultBlob = null;
 let currentRotation = 0;   // 0, 90, 180, 270
 let flipH = false;
 let flipV = false;
 let baseImage = null;
 
-dropZone.addEventListener('click', () => fileInput.click());
-
-dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.classList.add('bg-torii-red/10');
-});
-
-dropZone.addEventListener('dragleave', () => {
-    dropZone.classList.remove('bg-torii-red/10');
-});
-
-dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('bg-torii-red/10');
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-        processFile(files[0]);
+// DOMContentLoaded後に初期化
+document.addEventListener('DOMContentLoaded', () => {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    
+    if (!dropZone || !fileInput) {
+        console.error('Required elements not found');
+        return;
     }
-});
+    
+    dropZone.addEventListener('click', () => {
+        fileInput.click();
+    });
 
-fileInput.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) {
-        processFile(e.target.files[0]);
-    }
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('bg-torii-red/10');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('bg-torii-red/10');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('bg-torii-red/10');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            processFile(files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            processFile(e.target.files[0]);
+        }
+    });
 });
 
 async function processFile(file) {
