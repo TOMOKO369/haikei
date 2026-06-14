@@ -1,74 +1,68 @@
 import { chromium } from 'playwright';
-import path from 'path';
 import fs from 'fs';
-
-// Create a simple test image (red square PNG)
-function createTestPNG() {
-    // Minimal 10x10 red PNG
-    const buf = Buffer.from([
-        0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a, // PNG signature
-        0x00,0x00,0x00,0x0d,0x49,0x48,0x44,0x52, // IHDR chunk length+type
-        0x00,0x00,0x00,0x0a,0x00,0x00,0x00,0x0a, // width=10, height=10
-        0x08,0x02,0x00,0x00,0x00,0x02,0x50,0x58, // bit depth, color type, etc
-        0xea,0x00,0x00,0x00,0x21,0x49,0x44,0x41, // IDAT
-        0x54,0x78,0x9c,0x62,0xf8,0x0f,0x00,0x01,
-        0x01,0x00,0x00,0x05,0x18,0xd8,0x4a,0x0f,
-        0x00,0x00,0x01,0x00,0x00,0x00,0x00,0x00,
-        0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-        0x00,0x00,0x00,0x00,0x49,0x45,0x4e,0x44, // IEND
-        0xae,0x42,0x60,0x82
-    ]);
-    return buf;
-}
+import path from 'path';
 
 const testImagePath = path.join(process.cwd(), 'test-image.png');
-fs.writeFileSync(testImagePath, createTestPNG());
 
 const browser = await chromium.launch({ headless: true });
+
+// Create a valid test image using canvas
+const imgPage = await browser.newPage();
+await imgPage.setContent(`<html><body style="margin:0">
+<canvas id="c" width="80" height="80"></canvas>
+<script>
+const ctx = document.getElementById('c').getContext('2d');
+ctx.fillStyle = '#3498db';
+ctx.fillRect(0, 0, 80, 80);
+ctx.fillStyle = '#e74c3c';
+ctx.beginPath();
+ctx.arc(40, 40, 25, 0, Math.PI * 2);
+ctx.fill();
+</script></body></html>`);
+const dataUrl = await imgPage.evaluate(() => document.getElementById('c').toDataURL('image/png'));
+fs.writeFileSync(testImagePath, Buffer.from(dataUrl.split(',')[1], 'base64'));
+await imgPage.close();
+console.log('✅ valid test image created');
+
 const page = await browser.newPage();
-
 const logs = [];
-const networkErrors = [];
-
-page.on('console', msg => logs.push(`[${msg.type()}] ${msg.text()}`));
-page.on('pageerror', err => logs.push(`[pageerror] ${err.message}`));
-page.on('response', resp => {
-    if (!resp.ok() && resp.status() !== 302) networkErrors.push(`${resp.status()} ${resp.url().substring(0, 100)}`);
+page.on('console', msg => {
+    if (!msg.text().includes('tailwindcss')) logs.push(`[${msg.type()}] ${msg.text().substring(0, 200)}`);
 });
+page.on('pageerror', err => logs.push(`[pageerror] ${err.message.substring(0, 200)}`));
 
 try {
     await page.goto('http://localhost:8765/index.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
     await page.waitForTimeout(2000);
 
     // Check click handler
-    const hasClickListener = await page.evaluate(() => {
+    const hasClick = await page.evaluate(() => {
         const dz = document.getElementById('drop-zone');
-        const fi = document.getElementById('file-input');
         let called = false;
         const orig = HTMLInputElement.prototype.click;
         HTMLInputElement.prototype.click = function() { called = true; };
-        dz.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        dz.click();
         HTMLInputElement.prototype.click = orig;
         return called;
     });
-    console.log('✅ click handler working:', hasClickListener);
+    console.log('✅ click handler:', hasClick);
 
-    // Upload a test image via file input
+    // Upload test image
     await page.setInputFiles('#file-input', testImagePath);
-    console.log('✅ file set on input');
+    console.log('⏳ processing image (may take 30–60s for first run)...');
 
-    // Wait for processing (background removal)
-    await page.waitForTimeout(5000);
+    // Wait for transform panel or error (up to 90s)
+    try {
+        await page.waitForSelector('#transform-panel', { timeout: 90000 });
+        console.log('✅ transform panel appeared — background removal succeeded!');
+        const hasDownloadBtn = await page.$('#download-btn');
+        console.log('✅ download button:', !!hasDownloadBtn);
+    } catch {
+        console.log('❌ transform panel did NOT appear within 90s');
+    }
 
-    // Check if transform panel appeared
-    const panelExists = await page.$('#transform-panel');
-    console.log('transform panel appeared:', !!panelExists);
-
-    console.log('\n--- Network errors ---');
-    networkErrors.slice(0, 10).forEach(e => console.log(e));
-
-    console.log('\n--- Page console logs ---');
-    logs.filter(l => !l.includes('tailwindcss')).forEach(l => console.log(l));
+    console.log('\n--- Logs ---');
+    logs.forEach(l => console.log(l));
 
 } catch(e) {
     console.error('Error:', e.message);
