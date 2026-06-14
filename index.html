@@ -282,8 +282,13 @@
 </div>
 </div>
 </footer>
+<script>
+document.getElementById('drop-zone').addEventListener('click', function() {
+    document.getElementById('file-input').click();
+});
+</script>
 <script type="module">
-import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/background-removal.esm.js';
+import { removeBackground } from 'https://esm.sh/@imgly/background-removal@1.4.5';
 
 let resultBlob = null;
 let currentRotation = 0;   // 0, 90, 180, 270
@@ -293,10 +298,6 @@ let baseImage = null;
 
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
-
-dropZone.addEventListener('click', () => {
-    fileInput.click();
-});
 
 dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
@@ -329,7 +330,9 @@ async function processFile(file) {
     }
     
     try {
-        const blob = await removeBackground(file);
+        const blob = await removeBackground(file, {
+            publicPath: 'https://staticimgly.com/@imgly/background-removal-data/1.4.5/dist/',
+        });
         
         // Load base image from blob
         baseImage = new Image();
