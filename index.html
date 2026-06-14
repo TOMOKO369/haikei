@@ -323,34 +323,54 @@ fileInput.addEventListener('change', (e) => {
     }
 });
 
+function showLoading() {
+    const inner = dropZone.querySelector('.w-full.h-full');
+    inner.innerHTML = `
+        <div class="flex flex-col items-center gap-4">
+            <div class="w-16 h-16 border-4 border-torii-red border-t-transparent rounded-full animate-spin"></div>
+            <p class="font-headline-md text-sumi-black">背景を滅しています...</p>
+            <p class="font-body-md text-secondary opacity-60 text-sm text-center">初回は AIモデルのDLで<br>30〜60秒かかります</p>
+        </div>
+    `;
+}
+
+function resetDropZone() {
+    const inner = dropZone.querySelector('.w-full.h-full');
+    inner.innerHTML = `
+        <span class="material-symbols-outlined text-8xl text-torii-red mb-4 group-hover:scale-110 transition-transform">ink_eraser</span>
+        <p class="font-headline-md text-headline-md text-sumi-black mb-2">イラストを捧げよ</p>
+        <p class="font-body-md text-secondary opacity-60">Drag &amp; Drop or Click to Sacrifice</p>
+    `;
+}
+
 async function processFile(file) {
     if (!file.type.startsWith('image/')) {
-        alert('Please select an image file');
+        alert('画像ファイルを選択してください');
         return;
     }
-    
+
+    showLoading();
+
     try {
         const blob = await removeBackground(file, {
             publicPath: 'https://staticimgly.com/@imgly/background-removal-data/1.4.5/dist/',
         });
-        
-        // Load base image from blob
+
         baseImage = new Image();
         baseImage.src = URL.createObjectURL(blob);
         baseImage.onload = () => {
-            // Reset transform state
             currentRotation = 0;
             flipH = false;
             flipV = false;
-            
-            // Show transform buttons and download option
+            resetDropZone();
             showTransformUI();
             applyTransform();
         };
-        
+
     } catch (err) {
         console.error(err);
-        alert('Processing failed');
+        resetDropZone();
+        alert('処理に失敗しました。別の画像で試してください。\n\nエラー: ' + err.message);
     }
 }
 
