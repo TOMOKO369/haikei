@@ -294,10 +294,6 @@ let baseImage = null;
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 
-fileInput.addEventListener('click', (e) => {
-    e.stopPropagation();
-});
-
 dropZone.addEventListener('click', () => {
     fileInput.click();
 });
